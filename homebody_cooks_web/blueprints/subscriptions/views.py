@@ -23,7 +23,7 @@ def create(plan_id):
     user.subscription = subscription_plan
     if user.save():
         flash('Plan Selected')
-        return redirect(url_for('transactions.new_checkout'))
+        return redirect(url_for('transactions.new_checkout', subscription_id = subscription_plan.id))
     else:
         flash("An error occured")
         return render_template('subscriptions/show.html', subscription_plan = subscription_plan)
