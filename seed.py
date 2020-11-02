@@ -2,7 +2,7 @@ from database import db
 from models.subscription import Subscription
 
 
-vegetarian_meal_1 = Subscription(name='Vegetarian', amount_of_meals = 2, price=88.00)
+vegetarian_meal_1 = Subscription(name='Vegetarian_2_meals', amount_of_meals = 2, price=88.00)
 vegetarian_meal_1.save()
 
 vege_meal_2 = Subscription(name='Vegetarian_3_meals', amount_of_meals = 3, price = 131.88)
