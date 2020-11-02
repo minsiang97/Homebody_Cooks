@@ -2,6 +2,7 @@ import os
 import config
 from flask import Flask
 from models.base_model import db
+from models.user import User
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
