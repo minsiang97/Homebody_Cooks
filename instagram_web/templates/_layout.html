@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% assets "home_css" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% assets "home_js" %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% block header %}
+    {% endblock %}
+
+    <title>
+      {% block title %}
+      {% endblock %}NEXTAGRAM
+    </title>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container">
+          <a class="navbar-brand" href="/"> <img src="./images/291893.svg" width="50" height="50" alt=""> Homebody Cooks</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+    
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                  <a class="nav-link" href="#">Recipes <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="#">Pricing</a>
+              </li>
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  How to 
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Ingredient Guides</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Food Preparation</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Kitchen & Home</a>
+                  </div>
+              </li>
+            </ul>
+            <ul class="navbar-nav my-2 my-lg-0 mr-2">
+              <li class="nav-item">
+                <a class="nav-link" href="">Log In</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <button class="btn btn-success my-2 my-sm-0" type="submit">Sign Up</button>
+            </form>
+          </div>
+      </div>
+      
+    </nav>
+    {% block content %}
+    {% endblock %}
+    <footer>
+      Made with &hearts; at <a target="_blank" href="https://www.nextacademy.com/?utm_source=github&utm_medium=student-challenge&utm_campaign=flask-nextagram">NEXT Academy</a>
+    </footer>
+  </body>
+</html>
