@@ -3,7 +3,6 @@ import peewee as pw
 from werkzeug.security import generate_password_hash
 import re
 
-
 class User(BaseModel):
     name = pw.CharField(unique=False, null = False)
     email = pw.CharField(unique=True, null = False)
