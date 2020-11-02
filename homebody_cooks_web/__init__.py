@@ -3,6 +3,7 @@ from flask import render_template
 from homebody_cooks_web.blueprints.users.views import users_blueprint
 from homebody_cooks_web.blueprints.sessions.views import sessions_blueprint
 from homebody_cooks_web.blueprints.transactions.views import transactions_blueprint
+from homebody_cooks_web.blueprints.subscriptions.views import subscriptions_blueprint
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 
@@ -12,6 +13,7 @@ assets.register(bundles)
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 app.register_blueprint(transactions_blueprint, url_prefix="/subscription/<subscription_id>/transactions")
+app.register_blueprint(subscriptions_blueprint, url_prefix="/subscriptions")
 
 @app.errorhandler(500)
 def internal_server_error(e):
