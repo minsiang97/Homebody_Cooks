@@ -5,6 +5,7 @@ from models.base_model import db
 from models.user import User
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
+import braintree
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'homebody_cooks_web')
@@ -21,6 +22,15 @@ if os.getenv('FLASK_ENV') == 'production':
 else:
     app.config.from_object("config.DevelopmentConfig")
 
+TRANSACTION_SUCCESS_STATUSES = [
+    braintree.Transaction.Status.Authorized,
+    braintree.Transaction.Status.Authorizing,
+    braintree.Transaction.Status.Settled,
+    braintree.Transaction.Status.SettlementConfirmed,
+    braintree.Transaction.Status.SettlementPending,
+    braintree.Transaction.Status.Settling,
+    braintree.Transaction.Status.SubmittedForSettlement
+]
 
 
 

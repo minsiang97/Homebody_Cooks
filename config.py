@@ -7,6 +7,10 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get(
         'SECRET_KEY') or os.urandom(32)
+    
+    BT_MERCHANT_ID= os.environ.get("BT_MERCHANT_ID")
+    BT_PUBLIC_KEY= os.environ.get("BT_PUBLIC_KEY")
+    BT_PRIVATE_KEY= os.environ.get("BT_PRIVATE_KEY")
 
 
 class ProductionConfig(Config):

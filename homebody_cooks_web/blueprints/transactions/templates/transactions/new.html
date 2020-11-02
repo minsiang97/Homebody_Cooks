@@ -1,0 +1,49 @@
+{% extends "_layout.html" %}
+
+{% block title %}
+  Homepage
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <form id="payment-form" action="{{url_for('transactions.create_checkout', subscription_id = subscription.id)}}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <section>
+          <div class="bt-drop-in-wrapper">
+            <div id="dropin-container"></div>
+          </div>
+      </section>
+      <input type="submit" />
+      <input type="hidden" id="nonce" name="payment_method_nonce"/>
+    </form>
+  
+  </div>
+  
+  <script type="text/javascript">
+      const form = document.getElementById('payment-form');
+  
+      braintree.dropin.create({
+      authorization: "{{client_token}}",
+      container: document.getElementById('dropin-container'),
+    
+      }, (error, dropinInstance) => {
+      if (error) console.error(error);
+  
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+  
+      dropinInstance.requestPaymentMethod((error, payload) => {
+        if (error) console.error(error);
+  
+        document.getElementById('nonce').value = payload.nonce;
+        form.submit();
+    
+      });
+    });
+  });
+  </script>
+  
+{% endblock %}

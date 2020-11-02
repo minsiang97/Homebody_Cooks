@@ -1,0 +1,28 @@
+{% extends "_layout.html"%}
+
+
+{% block title %}Payment Status | Nextagram{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center mt-5">
+    <div>
+        <img src="/static/{{result['icon']}}.png" width = "70" height="70" alt="">
+    </div>
+    <div class="ml-3">
+        <h3>{{result['header']}}</h3>
+        <p>{{result['message']}}</p>
+    </div>
+    
+</div>
+
+<p class="text-center mt-5">If it did not auto redirect. <a href="{{url_for('home')}}">Click here</a></p>
+<script>
+    var timer = setTimeout(function() {
+            window.location='http://localhost:5000'
+        }, 3000);
+</script>
+
+{% endblock %}
