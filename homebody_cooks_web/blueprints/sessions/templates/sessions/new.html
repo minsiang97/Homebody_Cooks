@@ -8,11 +8,16 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{{url_for('sessions.create')}}" method="POST">
-      <label for="user_email">Email</label>
-      <input type="text" name="user_email">
-      <label for="user_password">Password</label>
-      <input type="text" name="user_password">
-      <button type="submit" class="btn btn-primary">Log In</button>
-  </form>
+<div class="container-fluid">
+    <h1>Log In</h1>
+    <form action="{{url_for('sessions.create')}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <label for="user_email">Email</label>
+        <input type="text" name="user_email">
+        <label for="user_password">Password</label>
+        <input type="password" name="user_password">
+        <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+</div>
+  
 {% endblock %}
