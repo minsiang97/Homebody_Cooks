@@ -1,4 +1,5 @@
 from models.base_model import BaseModel
+from models.subscription import Subscription
 import peewee as pw
 from werkzeug.security import generate_password_hash
 import re
@@ -8,6 +9,8 @@ class User(BaseModel):
     email = pw.CharField(unique=True, null = False)
     password_hash = pw.CharField(unique=False, null = False)
     password = None
+    is_valid = pw.BooleanField(default=0)
+    subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", default=1)
 
     def validate(self):
         duplicate_emails = User.get_or_none(User.email == self.email)
