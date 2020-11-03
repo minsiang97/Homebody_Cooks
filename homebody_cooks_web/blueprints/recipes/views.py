@@ -15,6 +15,7 @@ def show():
     return render_template('recipes/show.html', recipes = recipes)
 
 @recipes_blueprint.route("/<recipe_id>", methods=["POST"])
+@login_required
 def add_to_cart(recipe_id):
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
     subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id)
@@ -23,3 +24,4 @@ def add_to_cart(recipe_id):
     else :
         flash ("Failed to add to cart", "danger")
         return redirect(url_for('recipes.show'))
+
