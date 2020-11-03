@@ -1,0 +1,15 @@
+{% extends "_layout.html" %}
+{% block content %}
+<h1>Add New Ingredient</h1>
+<div>
+    <form action="{{ url_for('ingredients.append')}}">
+        <label for="recipe_name">Ingredient Name:</label>
+        <input type="text" name="ingredient_name" /> <br>
+        <input type="submit" value="Add Ingredient"/>
+    </form>
+    <form action="{{ url_for('ingredients.create')}}", method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="submit" value="Done"/>
+    </form>
+</div>
+{% endblock %}

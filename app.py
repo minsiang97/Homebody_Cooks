@@ -1,8 +1,15 @@
 import os
 import config
 from flask import Flask
+from flask_admin import Admin
+from flask_admin.contrib.peewee import ModelView
 from models.base_model import db
 from models.user import User
+from models.ingredient import Ingredient
+from models.recipe import Recipe
+from models.recipe_ingredient import RecipeIngredient
+from models.measurement import Measurement
+from models.subscription import Subscription
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import braintree
@@ -11,7 +18,15 @@ web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'homebody_cooks_web')
 
 app = Flask('HOMEBODY COOKS', root_path=web_dir)
+admin = Admin(app)
 csrf = CSRFProtect(app)
+
+admin.add_view(ModelView(User))
+admin.add_view(ModelView(Ingredient))
+admin.add_view(ModelView(Recipe))
+admin.add_view(ModelView(RecipeIngredient))
+admin.add_view(ModelView(Measurement))
+admin.add_view(ModelView(Subscription))
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

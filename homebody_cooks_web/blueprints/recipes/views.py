@@ -19,8 +19,14 @@ def new():
     return render_template('recipes/new.html')
 
 @recipes_blueprint.route('/new/', methods=["POST"])
-def create()
-    pass
+def create():
+    recipe = Recipe(name=request.form.get("recipe_name"), description=request.form.get("recipe_description"))
+    if recipe.save():
+        flash("Recipe Name & Description Added")
+        return redirect(url_for('ingredients.create'))
+    else:
+        flash("An error occured")
+        return render_template('recipes/new.html')
 
 @recipes_blueprint.route("/show", methods=["GET"])
 def show():
