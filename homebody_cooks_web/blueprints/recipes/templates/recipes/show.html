@@ -1,0 +1,26 @@
+{% extends "_layout.html" %}
+{% block content %}
+<div class="container">
+    <h1>Recipes</h1>
+</div>
+   
+{%for recipe in recipes %}
+
+    <div class='container'>
+        <div class="row">
+            <div class="col-sm-4">
+                <img src= "/static/recipes/{{recipe.image_url}}" class="w-100" alt="">
+            </div>
+            <div class="col-sm-5">
+                <h3>{{recipe.name}}</h3>
+                <p>{{recipe.description}}</p>
+                <form action="{{url_for('recipes.add_to_cart', recipe_id = recipe.id)}}", method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="submit" value="Add to Cart"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{%endfor%}
+{% endblock %}
