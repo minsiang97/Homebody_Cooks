@@ -1,5 +1,6 @@
 from database import db
 from models.subscription import Subscription
+from models.recipe import Recipe
 
 
 vegetarian_meal_1 = Subscription(name='Vegetarian_2_meals', amount_of_meals = 2, price=88.00)
