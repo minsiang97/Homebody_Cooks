@@ -8,8 +8,8 @@
 
     <div class='container'>
         <div class="row">
-            <div class="col-sm-4">
-                <img src= "/static/recipes/{{recipe.image_url}}" class="w-100" alt="">
+            <div class="col-sm-5">
+                <img src= "/static/recipes/{{recipe.image_url}}" class="recipe-image w-100" alt="">
             </div>
             <div class="col-sm-5">
                 <h3>{{recipe.name}}</h3>
@@ -23,4 +23,8 @@
     </div>
 
 {%endfor%}
+
+<form action="{{url_for('users.view_cart', user_id = current_user.id)}}" class="cart-button">
+    <button class="btn btn-primary rounded-circle w-100" type="submit"><i class="fa fa-shopping-cart w-100" aria-hidden="true"></i></button>
+</form>
 {% endblock %}
