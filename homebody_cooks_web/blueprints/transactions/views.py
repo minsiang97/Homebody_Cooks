@@ -60,3 +60,5 @@ def create_checkout(subscription_id):
 
     else :
         return redirect(url_for('transactions.show_checkout', subscription_id = subscription.id, transaction_id=result.transaction.id ))    
+
+
