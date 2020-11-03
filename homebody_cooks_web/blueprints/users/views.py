@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_required, current_user, login_user
 from models.user import User
 from models.subscription import Subscription
+from models.subscription_recipe import Subscription_Recipe
+from models.recipe import Recipe
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -26,6 +28,23 @@ def create():
     else:
         flash(f"{user.errors[0]}")
         return redirect(url_for("users.new"))
+
+@users_blueprint.route("/<user_id>/checkout", methods=["GET"])
+@login_required
+def view_cart(user_id):
+    user = User.get_or_none(User.id == user_id)
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
+    return render_template("users/checkout.html", subscription_recipes = subscription_recipes, user = current_user)
+
+@users_blueprint.route("/<user_id>/checkout/<recipe_id>/delete", methods=["POST"])
+@login_required
+def delete_from_cart(user_id, recipe_id):
+    user = User.get_or_none(User.id == user_id)
+    recipe = Recipe.get_or_none(Recipe.id == recipe_id)
+    if current_user.delete_from_cart(recipe):
+        return redirect(url_for('users.view_cart', user_id = current_user.id))
+    else :
+        return redirect(url_for('users.view_cart', user_id = current_user.id))
 
 
 @users_blueprint.route('/<username>', methods=["GET"])

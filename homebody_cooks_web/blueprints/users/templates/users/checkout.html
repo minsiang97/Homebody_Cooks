@@ -1,0 +1,25 @@
+{% extends "_layout.html" %}
+{% block content %}
+<div class="container">
+    <h1>Confirmation</h1>
+</div>
+   
+{% for subscription_recipe in subscription_recipes %}
+<div class='container'>
+    <div class="row">
+        <div class="col-sm-2">
+            <img src= "/static/recipes/{{subscription_recipe.recipe.image_url}}" class="checkout-image w-100" alt="">
+        </div>
+        <div class="col-sm-5">
+            <h5>{{subscription_recipe.recipe.recipe_name}}</h5>
+        </div>
+        <div class="col-sm-2">
+            <form action="{{url_for('users.delete_from_cart', user_id = current_user.id, recipe_id = subscription_recipe.recipe.id)}}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

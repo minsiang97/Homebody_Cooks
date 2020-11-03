@@ -49,3 +49,6 @@ class User(BaseModel):
     def is_anonymous(self):
         return False
     
+    def delete_from_cart(self,recipe):
+        from models.subscription_recipe import Subscription_Recipe
+        return Subscription_Recipe.delete().where(Subscription_Recipe.user == self.id, Subscription_Recipe.recipe==recipe.id).execute()
