@@ -19,7 +19,7 @@ def new():
     return render_template('recipes/new.html')
 
 @recipes_blueprint.route('/new/', methods=["POST"])
-def create()
+def create():
     pass
 
 @recipes_blueprint.route("/show", methods=["GET"])

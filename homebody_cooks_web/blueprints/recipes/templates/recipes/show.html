@@ -4,7 +4,7 @@
     <h1>Recipes</h1>
 </div>
    
-{%for recipe in recipes %}
+{% for recipe in recipes %}
 
     <div class='container'>
         <div class="row">
@@ -12,7 +12,7 @@
                 <img src= "/static/recipes/{{recipe.image_url}}" class="recipe-image w-100" alt="">
             </div>
             <div class="col-sm-5">
-                <h3>{{recipe.name}}</h3>
+                <h3>{{recipe.recipe_name}}</h3>
                 <p>{{recipe.description}}</p>
                 <form action="{{url_for('recipes.add_to_cart', recipe_id = recipe.id)}}", method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
