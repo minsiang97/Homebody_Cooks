@@ -25,6 +25,7 @@ def new_checkout(subscription_id):
 def show_checkout(subscription_id, transaction_id):
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
     transaction = gateway.transaction.find(transaction_id)
+    user = User.get_by_id(current_user.id)
     result = {}
     if transaction.status in TRANSACTION_SUCCESS_STATUSES :
         result = {
@@ -32,6 +33,9 @@ def show_checkout(subscription_id, transaction_id):
             'icon' : "success",
             'message' : "Your transaction has been successfully processed."
         }
+        user.is_valid = True
+        user.save()
+
     else :
         result = {
             'header' : "Transaction Failed",

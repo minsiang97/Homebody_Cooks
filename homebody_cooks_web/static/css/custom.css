@@ -33,3 +33,7 @@ footer a {
 .checkout-image {
   height: 150px;
 }
+
+.recipe {
+  position: relative;
+}
