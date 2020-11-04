@@ -1,0 +1,14 @@
+{% extends "_layout.html" %}
+{% block content %}
+<h1>Add Recipe Image</h1>
+<div>
+    <form action="{{url_for('recipes.upload_image', recipe_id=recipe_id)}}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <label for="user_file">Upload Recipe Image</label>
+        <br></br>
+        <input type="file" name="recipe_image"/>
+        <br></br>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+{% endblock %}

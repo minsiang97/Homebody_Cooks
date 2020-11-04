@@ -3,6 +3,7 @@ from models.subscription import Subscription
 import peewee as pw
 from werkzeug.security import generate_password_hash
 import re
+from playhouse.hybrid import hybrid_property
 from flask_admin import Admin, AdminIndexView
 from flask_login import current_user, UserMixin
 from flask import abort, flash
@@ -15,7 +16,16 @@ class User(BaseModel, UserMixin):
     password = None
     is_valid = pw.BooleanField(default=0)
     subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", default=1)
+    profile_image_url = pw.TextField(null=True)
     is_admin = pw.BooleanField(default=0)
+
+    @hybrid_property
+    def profile_image_path(self):
+        from app import app
+        if not self.profile_image_url:
+            return app.config.get("S3_LOCATION") + "Untitled_Artwork.jpg"
+        else:
+            return app.config.get("S3_LOCATION") + self.profile_image_url
 
     def validate(self):
         duplicate_emails = User.get_or_none(User.email == self.email)
@@ -41,6 +51,7 @@ class User(BaseModel, UserMixin):
             
         if not self.password_hash:
             self.errors.append("Password must be present")
+
         
     def is_active(self):
         return True

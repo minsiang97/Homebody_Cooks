@@ -54,6 +54,14 @@
               </li>
             </ul>
             {% if current_user.is_authenticated %}
+            <ul class="navbar-nav my-2 my-lg-0 mr-2">
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('users.show', id = current_user.id)}}">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('users.edit', id = current_user.id)}}">Profile Settings</a>
+              </li>
+            </ul>
             <form class="form-inline my-2 my-lg-0" action="{{url_for('sessions.logout')}}">
               <button class="btn btn-danger my-2 my-sm-0" type="submit">Log Out</button>
             </form>
