@@ -4,8 +4,12 @@ import peewee as pw
 from werkzeug.security import generate_password_hash
 import re
 from playhouse.hybrid import hybrid_property
+from flask_admin import Admin, AdminIndexView
+from flask_login import current_user, UserMixin
+from flask import abort, flash
 
-class User(BaseModel):
+
+class User(BaseModel, UserMixin):
     name = pw.CharField(unique=False, null = False)
     email = pw.CharField(unique=True, null = False)
     password_hash = pw.CharField(unique=False, null = False)
@@ -13,6 +17,7 @@ class User(BaseModel):
     is_valid = pw.BooleanField(default=0)
     subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", default=1)
     profile_image_url = pw.TextField(null=True)
+    is_admin = pw.BooleanField(default=0)
 
     @hybrid_property
     def profile_image_path(self):
@@ -63,3 +68,12 @@ class User(BaseModel):
     def delete_from_cart(self,recipe):
         from models.subscription_recipe import Subscription_Recipe
         return Subscription_Recipe.delete().where(Subscription_Recipe.user == self.id, Subscription_Recipe.recipe==recipe.id).execute()
+
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        if current_user.is_authenticated:
+            return current_user.is_admin
+        else :
+            return current_user.is_authenticated
+        

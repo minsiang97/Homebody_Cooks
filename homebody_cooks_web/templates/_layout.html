@@ -24,7 +24,8 @@
 
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
       <div class="container">
           <a class="navbar-brand" href="/"> <img src="/static/291893.svg" width="50" height="50" alt=""> Homebody Cooks</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +79,7 @@
       </div>
       
     </nav>
+  
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
@@ -91,8 +93,7 @@
     
     {% block content %}
     {% endblock %}
-    
-    
+  </div>
     <footer>
       Made with &hearts; at <a target="_blank" href="https://www.nextacademy.com/?utm_source=github&utm_medium=student-challenge&utm_campaign=flask-nextagram">NEXT Academy</a>
     </footer>

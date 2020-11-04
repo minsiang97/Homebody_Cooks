@@ -1,10 +1,10 @@
 import os
 import config
 from flask import Flask
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.peewee import ModelView
 from models.base_model import db
-from models.user import User
+from models.user import User, MyAdminIndexView
 from models.ingredient import Ingredient
 from models.recipe import Recipe
 from models.recipe_ingredient import RecipeIngredient
@@ -18,7 +18,7 @@ web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'homebody_cooks_web')
 
 app = Flask('HOMEBODY COOKS', root_path=web_dir)
-admin = Admin(app)
+admin = Admin(app, index_view = MyAdminIndexView())
 csrf = CSRFProtect(app)
 
 admin.add_view(ModelView(User))
@@ -46,9 +46,6 @@ TRANSACTION_SUCCESS_STATUSES = [
     braintree.Transaction.Status.Settling,
     braintree.Transaction.Status.SubmittedForSettlement
 ]
-
-
-
 
 @login_manager.user_loader
 def load_user(user_id):

@@ -1,4 +1,5 @@
 {% extends "_layout.html" %}
+
 {% block content %}
 <div class="container">
     <h1>Recipes</h1>
@@ -6,7 +7,7 @@
    
 {% for recipe in recipes %}
 
-    <div class='container'>
+    <div class='container recipe'>
         <div class="row">
             <div class="col-sm-5">
                 <img src= "{{recipe.recipe_image_path}}" class="recipe-image w-100" alt="">
