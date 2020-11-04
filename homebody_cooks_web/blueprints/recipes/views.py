@@ -8,15 +8,17 @@ from models.subscription import Subscription
 from models.user import User
 from models.recipe import Recipe
 from models.subscription_recipe import Subscription_Recipe
+from helpers import s3, upload_to_s3
 
 recipes_blueprint = Blueprint('recipes',
                             __name__,
                             template_folder='templates')
 
 
-@recipes_blueprint.route('/new', methods=["GET"])
-def new():
-    return render_template('recipes/new.html')
+@recipes_blueprint.route('/<recipe_id>/edit', methods=["GET"])
+def edit(recipe_id):
+    recipe = Recipe.get_or_none(Recipe.id == recipe_id)
+    return render_template('recipes/edit.html', recipe_id = recipe.id)
 
 @recipes_blueprint.route('/new/', methods=["POST"])
 def create():
@@ -44,3 +46,28 @@ def add_to_cart(recipe_id):
         flash ("Failed to add to cart", "danger")
         return redirect(url_for('recipes.show'))
 
+@recipes_blueprint.route("/<recipe_id>/upload", methods=["POST"])
+@login_required
+def upload_image(recipe_id):
+    recipe = Recipe.get_or_none(Recipe.id == recipe_id)
+
+    if "recipe_image" not in request.files:
+        return "No recipe_image key in request.files"
+
+    file = request.files["recipe_image"]
+
+    if file.filename == "":
+        return "Please select a file"
+
+    if file:
+        file_path= upload_to_s3(file, "recipe")
+        recipe.image_url = file_path
+        if recipe.save():
+            flash("Image Uploaded")
+            return redirect(url_for("recipes.edit", recipe_id = recipe.id))
+        else:
+            flash("An error occured")
+            return redirect(url_for("recipes.edit", recipe_id = recipe.id))
+    else:
+        flash("No file selected")
+        return redirect(url_for("recipes.edit", recipe_id = recipe.id))

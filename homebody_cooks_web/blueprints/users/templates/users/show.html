@@ -1,0 +1,16 @@
+{%extends "_layout.html" %}
+
+{% block header %}
+{% endblock %}
+{% block title %}{{user.name}} | HomeBody Cooks{% endblock %}
+{% block content %}
+{%if current_user == user%}
+    <div>
+    <h4>{{user.name}}</h4>
+    <h4>Email: {{user.email}}</h4>
+    <img src="{{user.profile_image_path}}" style="width:150px;height:150px;border-radius:50%;"/>
+{%else%}
+    <h4>Please Log In</h4>
+{%endif%}
+</div>
+{% endblock %}
