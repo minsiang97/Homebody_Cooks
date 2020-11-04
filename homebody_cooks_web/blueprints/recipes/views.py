@@ -7,6 +7,7 @@ from models.recipe_ingredient import RecipeIngredient
 from models.subscription import Subscription
 from models.user import User
 from models.recipe import Recipe
+from models.order import Order
 from models.subscription_recipe import Subscription_Recipe
 from helpers import s3, upload_to_s3
 
@@ -46,12 +47,16 @@ def choose_ingredient(recipe_id):
 @login_required
 def add_to_cart(recipe_id):
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
-    print(request.form.getlist('ingredients'))
     ingredients = request.form.getlist('ingredients')
+    subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id)
+    subscription_recipe.save()
+    user_recipe = Subscription_Recipe.get_or_none(Subscription_Recipe.recipe == recipe.id)
+    print(user_recipe)
     for ingredient in ingredients :
-        subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id, ingredient = ingredient)
-        subscription_recipe.save()
-    if subscription_recipe.save():    
+        order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
+        order.save()
+    if subscription_recipe.save() and order.save():   
+        flash("Successfully added to cart", "success") 
         return redirect(url_for('recipes.show'))
     else :
         flash ("Failed to add to cart", "danger")
