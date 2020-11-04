@@ -15,9 +15,8 @@
             <div class="col-sm-5">
                 <h3>{{recipe.recipe_name}}</h3>
                 <p>{{recipe.description}}</p>
-                <form action="{{url_for('recipes.add_to_cart', recipe_id = recipe.id)}}", method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <input type="submit" value="Add to Cart"/>
+                <form action="{{url_for('recipes.choose_ingredient', recipe_id = recipe.id)}}">
+                    <button class="btn btn-primary" type="submit">Choose your ingredient</button>
                 </form>
             </div>
         </div>
