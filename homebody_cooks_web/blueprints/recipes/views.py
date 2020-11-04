@@ -35,17 +35,28 @@ def show():
     recipes = Recipe.select()
     return render_template('recipes/show.html', recipes = recipes)
 
+@recipes_blueprint.route("/<recipe_id>/choose_ingredient", methods=["GET"])
+@login_required
+def choose_ingredient(recipe_id):
+    recipe = Recipe.get_or_none(Recipe.id == recipe_id)
+    ingredients = RecipeIngredient.select().where(RecipeIngredient.recipe_id == recipe.id)
+    return render_template('recipes/choose_ingredient.html', ingredients = ingredients, recipe = recipe)
+
 @recipes_blueprint.route("/<recipe_id>", methods=["POST"])
 @login_required
 def add_to_cart(recipe_id):
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
-    subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id)
-    if subscription_recipe.save():
+    print(request.form.getlist('ingredients'))
+    ingredients = request.form.getlist('ingredients')
+    for ingredient in ingredients :
+        subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id, ingredient = ingredient)
+        subscription_recipe.save()
+    if subscription_recipe.save():    
         return redirect(url_for('recipes.show'))
     else :
         flash ("Failed to add to cart", "danger")
         return redirect(url_for('recipes.show'))
-
+        
 @recipes_blueprint.route("/<recipe_id>/upload", methods=["POST"])
 @login_required
 def upload_image(recipe_id):
