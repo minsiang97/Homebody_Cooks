@@ -9,5 +9,4 @@ class Subscription_Recipe(BaseModel):
     user = pw.ForeignKeyField(User, backref = "recipes", on_delete="CASCADE")
     subscription = pw.ForeignKeyField(Subscription, backref = "recipes", on_delete = "CASCADE")
     recipe = pw.ForeignKeyField(Recipe, backref = "recipes", on_delete = "CASCADE")
-    ingredient = pw.ForeignKeyField(Ingredient, backref = "recipes", on_delete = "CASCADE")
 
