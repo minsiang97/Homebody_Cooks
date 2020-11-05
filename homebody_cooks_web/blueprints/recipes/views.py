@@ -50,8 +50,7 @@ def add_to_cart(recipe_id):
     ingredients = request.form.getlist('ingredients')
     subscription_recipe = Subscription_Recipe(user = current_user.id, subscription = current_user.subscription, recipe=recipe.id)
     subscription_recipe.save()
-    user_recipe = Subscription_Recipe.get_or_none(Subscription_Recipe.recipe == recipe.id)
-    print(user_recipe)
+    user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == current_user.id).order_by(Subscription_Recipe.created_at.desc()).get()
     for ingredient in ingredients :
         order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
         order.save()
