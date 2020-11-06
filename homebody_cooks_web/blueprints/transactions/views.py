@@ -33,8 +33,6 @@ def show_checkout(subscription_id, transaction_id):
             'icon' : "success",
             'message' : "Your transaction has been successfully processed."
         }
-        user.is_valid = True
-        user.save()
 
     else :
         result = {
@@ -47,6 +45,7 @@ def show_checkout(subscription_id, transaction_id):
 @transactions_blueprint.route("/", methods=["POST"])
 def create_checkout(subscription_id):
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
+    user = User.get_by_id(current_user.id)
     nonce_from_the_client = request.form["payment_method_nonce"]
     result = gateway.customer.create({
         "first_name": current_user.name,
@@ -63,8 +62,10 @@ def create_checkout(subscription_id):
 
     if type(result_subscription) == SuccessfulResult:
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = current_user.id)
-    
+
         if new_transaction.save():
+            user.is_valid = True
+            user.save()
             flash ("Transaction Successful", "success")
             return redirect(url_for('home'))
 
