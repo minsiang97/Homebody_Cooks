@@ -73,5 +73,8 @@ class User(BaseModel, UserMixin):
 
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):
-        return current_user.is_authenticated
+        if current_user.is_authenticated:
+            return current_user.is_admin
+        else :
+            return current_user.is_authenticated
         
