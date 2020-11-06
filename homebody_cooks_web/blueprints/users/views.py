@@ -7,8 +7,8 @@ from models.subscription_recipe import Subscription_Recipe
 from models.recipe import Recipe
 from helpers import s3, upload_to_s3
 from flask_mail import Message
-from app import mail
-from datetime import datetime, timedelta
+from app import mail, send_message_create_user, send_msg_checkout
+from datetime import date, timedelta
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -29,9 +29,7 @@ def create():
         session["user_id"] = user.id
         login_user(user)
         flash('Successfully Signed Up')
-        msg = Message('Account Confirmation', recipients=[current_user.email])
-        msg.body = "Hi {}. Welcome to Homebody Cooks!! Your account has been set up successfully. Do choose a subscription plan that fits you well. We are here to provide services that satisfy the needs of our customer.".format(current_user.name)
-        mail.send(msg)
+        send_message_create_user.delay(email = current_user.email, name = current_user.name)
         return redirect(url_for("subscriptions.show"))
     else:
         flash(f"{user.errors[0]}")
@@ -59,10 +57,8 @@ def delete_from_cart(user_id, recipe_id):
 def checkout(user_id):
     user = User.get_or_none(User.id == user_id)
     subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
-    msg = Message('Order Confirmation', recipients=[current_user.email])
-    msg.body = "Hi {}. Your order is confirmed and will be processed immediately".format(current_user.name)
     if subscription_recipes:
-        mail.send(msg)
+        send_msg_checkout.delay(email=current_user.email, name=current_user.name)
         flash("Successfully ordered", "success")
         return redirect(url_for('home'))
     else:

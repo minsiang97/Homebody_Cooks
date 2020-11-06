@@ -30,6 +30,9 @@ class Config(object):
     MAIL_MAX_EMAILS =  None
     MAIL_ASCII_ATTACHMENTS = False
 
+    CELERY_BROKER_URL= os.environ.get("CELERY_BROKER_URL")
+    CELERY_RESULT_BACKEND=os.environ.get("CELERY_RESULT_BACKEND")
+
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
