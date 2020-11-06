@@ -36,7 +36,6 @@ def create(plan_id):
         flash("An error occured")
         return render_template('subscriptions/show.html', subscription_plan = subscription_plan)
 
-
 @subscriptions_blueprint.route('/<plan_id>/change_plan', methods=["POST"])
 @login_required
 def update(plan_id):
