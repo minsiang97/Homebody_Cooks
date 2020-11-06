@@ -30,7 +30,7 @@ def create():
         login_user(user)
         flash('Successfully Signed Up')
         msg = Message('Account Confirmation', recipients=[current_user.email])
-        msg.body = "Hi {}. Your account has been set up successfully. You can start choosing the meals provided in your subscription plan. Start cooking and enjoy!".format(current_user.name)
+        msg.body = "Hi {}. Welcome to Homebody Cooks!! Your account has been set up successfully. Do choose a subscription plan that fits you well. We are here to provide services that satisfy the needs of our customer.".format(current_user.name)
         mail.send(msg)
         return redirect(url_for("subscriptions.show"))
     else:
@@ -60,7 +60,6 @@ def checkout(user_id):
     user = User.get_or_none(User.id == user_id)
     subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
     msg = Message('Order Confirmation', recipients=[current_user.email])
-    msg.add_recipient("ongminsiang@gmail.com")
     msg.body = "Hi {}. Your order is confirmed and will be processed immediately".format(current_user.name)
     if subscription_recipes:
         mail.send(msg)
