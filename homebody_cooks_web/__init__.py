@@ -8,11 +8,13 @@ from homebody_cooks_web.blueprints.recipes.views import recipes_blueprint
 from homebody_cooks_web.blueprints.ingredients.views import ingredients_blueprint
 from homebody_cooks_web.blueprints.measurements.views import measurements_blueprint
 from homebody_cooks_web.blueprints.recipe_ingredients.views import recipe_ingredients_blueprint
+from helpers import oauth
 from flask_assets import Environment, Bundle
 from .util.assets import bundles
 
 assets = Environment(app)
 assets.register(bundles)
+oauth.init_app(app)
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/sessions")

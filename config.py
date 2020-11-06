@@ -17,6 +17,9 @@ class Config(object):
     S3_SECRET                 = os.environ.get("S3_SECRET_ACCESS_KEY")
     S3_LOCATION               = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)
 
+    G_CLIENT_SECRET = os.environ.get("G_CLIENT_SECRET")
+    G_CLIENT_ID = os.environ.get("G_CLIENT_ID")
+
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_TLS =  False
