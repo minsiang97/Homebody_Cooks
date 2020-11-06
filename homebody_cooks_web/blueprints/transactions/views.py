@@ -7,6 +7,7 @@ from app import TRANSACTION_SUCCESS_STATUSES, app
 from flask_login import login_required, current_user
 from helpers import gateway
 from braintree.successful_result import SuccessfulResult
+from flask_mail import Message 
 
 transactions_blueprint = Blueprint('transactions',
                             __name__,
@@ -67,6 +68,9 @@ def create_checkout(subscription_id):
             user.is_valid = True
             user.save()
             flash ("Transaction Successful", "success")
+            msg = Message('Payment Confirmation', recipients=[current_user.email])
+            msg.body = "Hi {}. Your payment has processed successfully. You can start choosing the meals provided in your subscription plan. Start cooking and enjoy!".format(current_user.name)
+            mail.send(msg)
             return redirect(url_for('home'))
 
     else :

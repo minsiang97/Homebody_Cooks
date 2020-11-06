@@ -145,19 +145,3 @@ def upload_profile(id):
     else:
         flash("No file selected")
         return redirect(url_for("users.edit", id = user.id))
-
-def reminder_friday():
-    user_recipes = Subscription_Recipe.select().where(Subscription_Recipe.created_at.between(date.today() - timedelta(days = 5), date.today()))
-    user_id = [u.user.id for u in user_recipes]
-    to_send_email_id = User.select().where(User.id.not_in(user_id))
-    to_send_email_list_friday = [u.email for u in to_send_email_id]
-
-    return to_send_email_list_friday
-
-def reminder_sunday():
-    user_recipes = Subscription_Recipe.select().where(Subscription_Recipe.created_at.between(date.today() - timedelta(days = 7), date.today()))
-    user_id = [u.user.id for u in user_recipes]
-    to_send_email_id = User.select().where(User.id.not_in(user_id))
-    to_send_email_list_sunday = [u.email for u in to_send_email_id]
-
-    return to_send_email_list_sunday
