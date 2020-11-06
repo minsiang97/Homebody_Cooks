@@ -17,6 +17,15 @@ class Config(object):
     S3_SECRET                 = os.environ.get("S3_SECRET_ACCESS_KEY")
     S3_LOCATION               = 'http://{}.s3.amazonaws.com/'.format(S3_BUCKET)
 
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS =  False
+    MAIL_USE_SSL =  True
+    MAIL_USERNAME =  os.environ.get("MAIL_USERNAME")
+    MAIL_PASSWORD =  os.environ.get("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER") 
+    MAIL_MAX_EMAILS =  None
+    MAIL_ASCII_ATTACHMENTS = False
 
 class ProductionConfig(Config):
     DEBUG = False

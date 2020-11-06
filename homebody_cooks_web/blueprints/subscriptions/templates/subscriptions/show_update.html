@@ -1,0 +1,16 @@
+{% extends "_layout.html" %}
+{% block content %}
+    <h1>Subscription Plans</h1>
+{%for plan in subscription_plan%}
+    <div class='plan_card'>
+        <h3>{{plan.name}}</h3>
+        <p>{{plan.amount_of_meals}}</p>
+        <p>{{plan.price}}</p>
+        <form action="{{ url_for('subscriptions.update', plan_id = plan.id)}}", method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="submit" value="Change Plan"/>
+        </form>
+    </div>
+
+{%endfor%}
+{% endblock %}

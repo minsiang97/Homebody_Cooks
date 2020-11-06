@@ -6,6 +6,9 @@ from models.subscription import Subscription
 from models.subscription_recipe import Subscription_Recipe
 from models.recipe import Recipe
 from helpers import s3, upload_to_s3
+from flask_mail import Message
+from app import mail
+import datetime
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -21,23 +24,27 @@ def new():
 def create():
     user_password = request.form.get("password")
     user = User(name=request.form.get("user_name"), email=request.form.get("email"), password=user_password)
+    
     if user.save():
         session["user_id"] = user.id
         login_user(user)
         flash('Successfully Signed Up')
-        return redirect(url_for("home"))
+        msg = Message('Account Confirmation', recipients=[current_user.email])
+        msg.body = "Hi {}. Your account has been set up successfully. You can start choosing the meals provided in your subscription plan. Start cooking and enjoy!".format(current_user.name)
+        mail.send(msg)
+        return redirect(url_for("subscriptions.show"))
     else:
         flash(f"{user.errors[0]}")
         return redirect(url_for("users.new"))
 
-@users_blueprint.route("/<user_id>/checkout", methods=["GET"])
+@users_blueprint.route("/<user_id>/view_cart", methods=["GET"])
 @login_required
 def view_cart(user_id):
     user = User.get_or_none(User.id == user_id)
-    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id, Subscription_Recipe.created_at >= datetime.date.today())
     return render_template("users/checkout.html", subscription_recipes = subscription_recipes, user = current_user)
 
-@users_blueprint.route("/<user_id>/checkout/<recipe_id>/delete", methods=["POST"])
+@users_blueprint.route("/<user_id>/view_cart/<recipe_id>/delete", methods=["POST"])
 @login_required
 def delete_from_cart(user_id, recipe_id):
     user = User.get_or_none(User.id == user_id)
@@ -47,6 +54,21 @@ def delete_from_cart(user_id, recipe_id):
     else :
         return redirect(url_for('users.view_cart', user_id = current_user.id))
 
+@users_blueprint.route("/<user_id>/checkout", methods=['POST'])
+@login_required
+def checkout(user_id):
+    user = User.get_or_none(User.id == user_id)
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
+    msg = Message('Order Confirmation', recipients=[current_user.email])
+    msg.add_recipient("ongminsiang@gmail.com")
+    msg.body = "Hi {}. Your order is confirmed and will be processed immediately".format(current_user.name)
+    if subscription_recipes:
+        mail.send(msg)
+        flash("Successfully ordered", "success")
+        return redirect(url_for('home'))
+    else:
+        flash("Error occured during confirmation. Try again", "danger")
+        return redirect(url_for('users.view_cart', user_id = current_user.id))
 
 @users_blueprint.route('/<id>', methods=["GET"])
 def show(id):
