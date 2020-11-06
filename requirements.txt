@@ -42,7 +42,7 @@ MarkupSafe==1.1.0
 mccabe==0.6.1
 passlib==1.7.4
 peewee==3.8.2
-peewee-db-evolve==3.7.0
+peewee-db-evolve==3.7.3
 prompt-toolkit==3.0.8
 psycopg2-binary==2.8.6
 pycodestyle==2.5.0
