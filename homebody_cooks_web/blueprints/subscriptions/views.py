@@ -28,3 +28,4 @@ def create(plan_id):
         flash("An error occured")
         return render_template('subscriptions/show.html', subscription_plan = subscription_plan)
 
+

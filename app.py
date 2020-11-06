@@ -10,6 +10,7 @@ from models.recipe import Recipe
 from models.recipe_ingredient import RecipeIngredient
 from models.measurement import Measurement
 from models.subscription import Subscription
+from tasks import make_celery
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import braintree
