@@ -7,8 +7,8 @@ from models.subscription_recipe import Subscription_Recipe
 from models.recipe import Recipe
 from helpers import s3, upload_to_s3
 from flask_mail import Message
-from app import mail
-import datetime
+from app import mail, send_message_create_user, send_msg_checkout
+from datetime import date, timedelta
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -29,9 +29,7 @@ def create():
         session["user_id"] = user.id
         login_user(user)
         flash('Successfully Signed Up')
-        msg = Message('Account Confirmation', recipients=[current_user.email])
-        msg.body = "Hi {}. Your account has been set up successfully. You can start choosing the meals provided in your subscription plan. Start cooking and enjoy!".format(current_user.name)
-        mail.send(msg)
+        send_message_create_user.delay(email = current_user.email, name = current_user.name)
         return redirect(url_for("subscriptions.show"))
     else:
         flash(f"{user.errors[0]}")
@@ -59,11 +57,8 @@ def delete_from_cart(user_id, recipe_id):
 def checkout(user_id):
     user = User.get_or_none(User.id == user_id)
     subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
-    msg = Message('Order Confirmation', recipients=[current_user.email])
-    msg.add_recipient("ongminsiang@gmail.com")
-    msg.body = "Hi {}. Your order is confirmed and will be processed immediately".format(current_user.name)
     if subscription_recipes:
-        mail.send(msg)
+        send_msg_checkout.delay(email=current_user.email, name=current_user.name)
         flash("Successfully ordered", "success")
         return redirect(url_for('home'))
     else:
@@ -150,3 +145,19 @@ def upload_profile(id):
     else:
         flash("No file selected")
         return redirect(url_for("users.edit", id = user.id))
+
+def reminder_friday():
+    user_recipes = Subscription_Recipe.select().where(Subscription_Recipe.created_at.between(date.today() - timedelta(days = 5), date.today()))
+    user_id = [u.user.id for u in user_recipes]
+    to_send_email_id = User.select().where(User.id.not_in(user_id))
+    to_send_email_list_friday = [u.email for u in to_send_email_id]
+
+    return to_send_email_list_friday
+
+def reminder_sunday():
+    user_recipes = Subscription_Recipe.select().where(Subscription_Recipe.created_at.between(date.today() - timedelta(days = 7), date.today()))
+    user_id = [u.user.id for u in user_recipes]
+    to_send_email_id = User.select().where(User.id.not_in(user_id))
+    to_send_email_list_sunday = [u.email for u in to_send_email_id]
+
+    return to_send_email_list_sunday
