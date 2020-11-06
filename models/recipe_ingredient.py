@@ -8,6 +8,6 @@ class RecipeIngredient(BaseModel):
     recipe_id = pw.ForeignKeyField(Recipe, backref="ingredients", on_delete = "CASCADE")
     ingredient_id = pw.ForeignKeyField(Ingredient, backref="ingredients", on_delete = "CASCADE")
     measurement_id = pw.ForeignKeyField(Measurement, backref="ingredients", on_delete = "CASCADE")
-    amount = pw.IntegerField()
+    amount = pw.CharField()
 
 
