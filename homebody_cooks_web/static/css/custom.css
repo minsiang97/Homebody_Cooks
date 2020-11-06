@@ -37,3 +37,8 @@ footer a {
 .recipe {
   position: relative;
 }
+
+.checkout {
+  position: absolute;
+  bottom: 8px;
+}

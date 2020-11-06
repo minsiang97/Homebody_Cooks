@@ -33,8 +33,6 @@ def show_checkout(subscription_id, transaction_id):
             'icon' : "success",
             'message' : "Your transaction has been successfully processed."
         }
-        user.is_valid = True
-        user.save()
 
     else :
         result = {
@@ -47,22 +45,32 @@ def show_checkout(subscription_id, transaction_id):
 @transactions_blueprint.route("/", methods=["POST"])
 def create_checkout(subscription_id):
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
+    user = User.get_by_id(current_user.id)
     nonce_from_the_client = request.form["payment_method_nonce"]
-    result = gateway.transaction.sale({
-    "amount": subscription.price,
-    "payment_method_nonce": nonce_from_the_client,
-    "options": {
-      "submit_for_settlement": True
-    }
+    result = gateway.customer.create({
+        "first_name": current_user.name,
+        "email": current_user.email,
+        "payment_method_nonce": nonce_from_the_client
     })
-    if type(result) == SuccessfulResult:
-        new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = current_user.id)
     
-        if new_transaction.save():
+    if result.is_success :
+        result_subscription = gateway.subscription.create({
+            "id" : current_user.id,
+            "payment_method_token": result.customer.payment_methods[0].token,
+            "plan_id": subscription.id
+        })
 
-            return redirect(url_for('transactions.show_checkout', subscription_id = subscription.id, transaction_id=result.transaction.id ))
+    if type(result_subscription) == SuccessfulResult:
+        new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = current_user.id)
+
+        if new_transaction.save():
+            user.is_valid = True
+            user.save()
+            flash ("Transaction Successful", "success")
+            return redirect(url_for('home'))
 
     else :
-        return redirect(url_for('transactions.show_checkout', subscription_id = subscription.id, transaction_id=result.transaction.id ))    
+        flash ("Transaction Failed, check your card details and try again", "danger")
+        return redirect(url_for('home'))    
 
 
