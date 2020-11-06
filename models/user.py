@@ -15,7 +15,7 @@ class User(BaseModel, UserMixin):
     password_hash = pw.CharField(unique=False, null = False)
     password = None
     is_valid = pw.BooleanField(default=0)
-    subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", default=1)
+    subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", null = True)
     profile_image_url = pw.TextField(null=True)
     is_admin = pw.BooleanField(default=0)
 
@@ -67,7 +67,8 @@ class User(BaseModel, UserMixin):
     
     def delete_from_cart(self,recipe):
         from models.subscription_recipe import Subscription_Recipe
-        return Subscription_Recipe.delete().where(Subscription_Recipe.user == self.id, Subscription_Recipe.recipe==recipe.id).execute()
+        import datetime
+        return Subscription_Recipe.delete().where(Subscription_Recipe.user == self.id, Subscription_Recipe.recipe==recipe.id, Subscription_Recipe.created_at >= datetime.date.today()).execute()
 
 
 class MyAdminIndexView(AdminIndexView):

@@ -13,6 +13,7 @@ from models.subscription import Subscription
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import braintree
+from flask_mail import Mail
 
 web_dir = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'homebody_cooks_web')
@@ -31,11 +32,14 @@ admin.add_view(ModelView(Subscription))
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
+mail = Mail(app)
 
 if os.getenv('FLASK_ENV') == 'production':
     app.config.from_object("config.ProductionConfig")
 else:
     app.config.from_object("config.DevelopmentConfig")
+
+mail = Mail(app)
 
 TRANSACTION_SUCCESS_STATUSES = [
     braintree.Transaction.Status.Authorized,

@@ -16,10 +16,21 @@
         <div class="col-sm-2">
             <form action="{{url_for('users.delete_from_cart', user_id = current_user.id, recipe_id = subscription_recipe.recipe.id)}}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <button class="btn btn-danger">Delete</button>
+                <button class="btn btn-danger" type="submit">Delete</button>
             </form>
         </div>
     </div>
 </div>
 {% endfor %}
+<div class="container-fluid checkout w-100 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-sm-10">
+            <form action="{{url_for('users.checkout', user_id = current_user.id)}}" class="text-center" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button class="btn btn-primary w-75" type="submit">Checkout</button>
+            </form>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
