@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from models.recipe import Recipe
+from app import app
 
 recipes_api_blueprint = Blueprint('recipes_api',
                              __name__,
@@ -19,3 +20,8 @@ def vegetarian() :
 def mix() :
     recipes = Recipe.select().where(Recipe.meal_type == "Mix")
     return jsonify([{"id" : r.id, "recipe_name" : r.recipe_name, "description" : r.description, "meal_type" : r.meal_type, "image_url" : r.image_url} for r in recipes])
+
+@recipes_api_blueprint.route('/images', methods=['GET'])
+def images():
+    recipes = Recipe.select()
+    return jsonify([{"recipe_image_path" : app.config.get("S3_LOCATION") + r.image_url} for r in recipes])
