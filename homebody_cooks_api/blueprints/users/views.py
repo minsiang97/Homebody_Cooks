@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
+from app import app
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -37,3 +38,13 @@ def create_user():
         return jsonify({"message" : "New User Created!", })
     else :
         return jsonify({"message" : "Error occured, try again"})
+
+@users_api_blueprint.route('images/me', methods=['GET'])
+@jwt_required
+def user_image():
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+    if user :
+        return jsonify({
+            "profile_image_path" : app.config.get("S3_LOCATION") + user.profile_image_url
+        })
