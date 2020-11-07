@@ -12,13 +12,11 @@ def index():
     return jsonify([{"id" : r.id, "recipe_name" : r.recipe_name, "description" : r.description, "meal_type" : r.meal_type, "image_url" : u.image_url} for r in recipes])
 
 @recipes_api_blueprint.route('/vegetarian', methods=['GET'])
-@jwt_required
 def vegetarian() :
     recipes = Recipe.select().where(Recipe.meal_type == "Vegetarian")
     return jsonify([{"id" : r.id, "recipe_name" : r.recipe_name, "description" : r.description, "meal_type" : r.meal_type, "image_url" : u.image_url} for r in recipes])
 
 @recipes_api_blueprint.route('/mix', methods=['GET'])
-@jwt_required
 def mix() :
     recipes = Recipe.select().where(Recipe.meal_type == "Mix")
     return jsonify([{"id" : r.id, "recipe_name" : r.recipe_name, "description" : r.description, "meal_type" : r.meal_type, "image_url" : u.image_url} for r in recipes])
