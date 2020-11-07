@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -27,3 +28,12 @@ def me():
             "is_valid" : user.is_valid
         })
 
+@users_api_blueprint.route('/', methods = ["POST"])
+def create_user():
+    data = request.json
+    hashed_password = generate_password_hash(data.get("password"))
+    new_user = User(name = data.get("user_name"), password_hash = hashed_password, email = data.get("email"))
+    if new_user.save() :
+        return jsonify({"message" : "New User Created!", })
+    else :
+        return jsonify({"message" : "Error occured, try again"})
