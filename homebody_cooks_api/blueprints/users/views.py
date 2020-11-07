@@ -3,6 +3,7 @@ from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
 from app import app
+from helpers import s3, upload_to_s3
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -39,12 +40,38 @@ def create_user():
     else :
         return jsonify({"message" : "Error occured, try again"})
 
-@users_api_blueprint.route('images/me', methods=['GET'])
+@users_api_blueprint.route('/images/me', methods=['GET'])
 @jwt_required
-def user_image():
+def get_user_image():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
     if user :
         return jsonify({
             "profile_image_path" : app.config.get("S3_LOCATION") + user.profile_image_url
         })
+
+
+@users_api_blueprint.route('/images', methods=['POST'])
+@jwt_required
+def post_user_image():
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+
+    if "profile_image" not in request.files:
+        return jsonify({"messages" : "No profile_image key in request.files"}) 
+
+    file = request.files["profile_image"]
+
+    if file.filename == "":
+        return jsonify({"messages" : "Please select a file"})
+
+    if file:
+        file_path= upload_to_s3(file, "users")
+        user.profile_image_url = file_path
+        if user.save():
+            return jsonify({"messages" : "Uploaded successfully", "profile_image_path" : app.config.get("S3_LOCATION") + user.profile_image_url})
+        else:
+            return jsonify({"messages" : "Error occured during uploading"})
+    else:
+        
+        return jsonify({"messages" : "No file selected"})
