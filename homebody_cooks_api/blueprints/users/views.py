@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
 from helpers import s3, upload_to_s3
 
@@ -30,13 +30,41 @@ def me():
             "is_valid" : user.is_valid
         })
 
+@users_api_blueprint.route('/me/update', methods=['PUT'])
+@jwt_required
+def update():
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+    if user:
+        data = request.json
+        hashed_password = user.password_hash
+        result = check_password_hash(hashed_password, data.get('old_password'))
+        if result:
+            user.name = data.get('user_name')
+            user.email = data.get('email')
+
+            if data.get('password') !="":
+                user.password = data.get('password')
+
+            if user.save():
+                return jsonify({"message" : "User updated successfully"})
+            else:
+                return jsonify({"message" : "Failed to update user information"})
+        else:
+            return jsonify({"message" : "Wrong Old Password"})
+    
+    else:
+        return jsonify({"message" : "Failed to update user information"})
+        
+
+
 @users_api_blueprint.route('/', methods = ["POST"])
 def create_user():
     data = request.json
     hashed_password = generate_password_hash(data.get("password"))
     new_user = User(name = data.get("user_name"), password_hash = hashed_password, email = data.get("email"))
     if new_user.save() :
-        return jsonify({"message" : "New User Created!", })
+        return jsonify({"message" : "New User Created!"})
     else :
         return jsonify({"message" : "Error occured, try again"})
 
