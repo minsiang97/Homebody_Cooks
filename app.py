@@ -90,6 +90,12 @@ def send_msg_checkout(email, name):
     mail.send(msg)
 
 @celery.task
+def send_message_first_payment(email, name):
+    msg = Message('Payment Confirmation', recipients=[email])
+    msg.body = "Hi {}. Your payment has processed successfully. You can start choosing the meals provided in your subscription plan. Start cooking and enjoy!".format(name)
+    mail.send(msg)
+
+@celery.task
 def reminder_friday():
     user_recipes = Subscription_Recipe.select().where(Subscription_Recipe.created_at.between(date.today() - timedelta(days = 5), date.today()))
     user_id = [u.user.id for u in user_recipes]

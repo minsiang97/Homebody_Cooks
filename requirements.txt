@@ -154,6 +154,7 @@ pyrsistent==0.16.0
 PySocks @ file:///opt/concourse/worker/volumes/live/85a5b906-0e08-41d9-6f59-084cee4e9492/volume/pysocks_1594394636991/work
 pytest==5.4.3
 python-dateutil==2.8.1
+python-dotenv==0.15.0
 python-jsonrpc-server @ file:///tmp/build/80754af9/python-jsonrpc-server_1594397536060/work
 python-language-server @ file:///opt/concourse/worker/volumes/live/5f0313b4-ff69-4d9d-5c31-e01b223dabd6/volume/python-language-server_1594161914367/work
 pytz==2020.1
