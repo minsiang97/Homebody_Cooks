@@ -5,9 +5,11 @@ from models.user import User
 from models.subscription import Subscription
 from models.subscription_recipe import Subscription_Recipe
 from models.recipe import Recipe
+from models.order_checkout import OrderCheckout
 from helpers import s3, upload_to_s3
 from flask_mail import Message
 from app import mail, send_message_create_user, send_msg_checkout
+import datetime
 from datetime import date, timedelta
 
 users_blueprint = Blueprint('users',
@@ -56,14 +58,25 @@ def delete_from_cart(user_id, recipe_id):
 @login_required
 def checkout(user_id):
     user = User.get_or_none(User.id == user_id)
-    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id)
-    if subscription_recipes:
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == current_user.id, Subscription_Recipe.created_at >= datetime.date.today())
+    for s in subscription_recipes :
+        order_checkout = OrderCheckout(subscription_recipe = s.id, user = user.id)
+        order_checkout.save()
+    if order_checkout.save():
         send_msg_checkout.delay(email=current_user.email, name=current_user.name)
         flash("Successfully ordered", "success")
         return redirect(url_for('home'))
     else:
         flash("Error occured during confirmation. Try again", "danger")
         return redirect(url_for('users.view_cart', user_id = current_user.id))
+
+@users_blueprint.route("/<user_id>/order_history", methods=['GET'])
+@login_required
+def order_history(user_id):
+    user = User.get_or_none(User.id == user_id)
+    order_checkouts = OrderCheckout.select().where(OrderCheckout.user == user.id)
+    return render_template('users/order_history.html', order_checkouts = order_checkouts, user = user)
+
 
 @users_blueprint.route('/<id>', methods=["GET"])
 def show(id):

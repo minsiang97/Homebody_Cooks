@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
+from models.order_checkout import OrderCheckout
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
@@ -103,3 +104,14 @@ def post_user_image():
     else:
         
         return jsonify({"messages" : "No file selected"})
+
+@users_api_blueprint.route('/me/order_history', methods=['GET'])
+@jwt_required
+def order_history():
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+    order_checkouts = OrderCheckout.select().where(OrderCheckout.user == user.id)
+    if order_checkouts :
+        return jsonify([{"id" : o.id, "subscription_recipe" : o.subscription_recipe.id, "user" : o.user.id} for o in order_checkouts])
+    else :
+        return jsonify({"messages" : "User does not have any previous order yet"})

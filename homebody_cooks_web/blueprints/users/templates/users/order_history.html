@@ -1,0 +1,31 @@
+{%extends "_layout.html" %}
+
+{% block header %}
+{% endblock %}
+{% block title %}{{user.name}} | HomeBody Cooks{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Order History</h1>
+</div>
+
+{% for o in order_checkouts %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <h5>{{o.created_at}}</h5>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <img src="{{o.subscription_recipe.recipe.recipe_image_path}}" class="recipe-image w-100" alt="">
+            </div>
+            <div class="col-sm-5">
+                <h3>{{o.subscription_recipe.recipe.recipe_name}}</h3>
+            </div>
+        </div>
+        
+        
+    </div>
+
+</div>
+{% endfor %}
+{% endblock %}

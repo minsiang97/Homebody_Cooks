@@ -5,8 +5,8 @@ from database import db
 
 
 class BaseModel(pw.Model):
-    created_at = pw.DateTimeField(default=datetime.datetime.now)
-    updated_at = pw.DateTimeField(default=datetime.datetime.now)
+    created_at = pw.DateTimeField(default=datetime.datetime.now, formats = '%Y-%m-%d %H:%M:%S')
+    updated_at = pw.DateTimeField(default=datetime.datetime.now, formats = '%Y-%m-%d %H:%M:%S')
 
     def save(self, *args, **kwargs):
         self.errors = []
