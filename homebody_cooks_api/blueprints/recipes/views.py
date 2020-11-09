@@ -25,3 +25,8 @@ def mix() :
 def images():
     recipes = Recipe.select()
     return jsonify([{"recipe_image_path" : app.config.get("S3_LOCATION") + r.image_url} for r in recipes])
+
+@recipes_api_blueprint.route('/<recipe_id>', methods=['GET'])
+def recipe(recipe_id):
+    recipe = Recipe.get_or_none(Recipe.id == recipe_id)
+    return jsonify([{"id" : recipe.id, "recipe_name" : recipe.recipe_name, "description" : recipe.description, "meal_type" : recipe.meal_type, "image_url" : app.config.get('S3_LOCATION') + recipe.image_url}])
