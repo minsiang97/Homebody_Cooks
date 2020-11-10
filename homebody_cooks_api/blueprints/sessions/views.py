@@ -20,3 +20,13 @@ def login():
             return jsonify ({"token" : token})
     
     return jsonify ({"Error" : "Invalid Credentials"})
+
+@sessions_api_blueprint.route('/google_login', methods=['POST'])
+def google_login():
+    email = request.json.get('user_email')
+    user = User.get_or_none(User.email == email)
+    if user :
+        token = create_access_token(identity = user.id)
+        return jsonify ({"token" : token})
+    
+    return jsonify ({"Error" : "Invalid Credentials"})

@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models.subscription_recipe import Subscription_Recipe
 from models.user import User
 from models.recipe import Recipe
+from models.order import Order
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import app
 import datetime
@@ -36,9 +37,15 @@ def today():
 def user_add_cart(recipe_id):
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
+    ingredients = request.json
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
     new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
-    if new_subscription_recipe.save():
+    new_subscription_recipe.save()
+    for ingredient in ingredients :
+        user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == user.id).order_by(Subscription_Recipe.created_at.desc()).get()
+        order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
+        order.save()
+    if order.save():
         return jsonify({"message" : "Successfully added to cart"})
     else :
         return jsonify({"message" : "Error occured"})
