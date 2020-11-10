@@ -8,9 +8,9 @@ recipe_ingredients_api_blueprint = Blueprint('recipe_ingredients_api',
 @recipe_ingredients_api_blueprint.route('/', methods=['GET'])
 def index():
     recipe_ingredients = RecipeIngredient.select()
-    return jsonify([{"id" : r.id, "recipe_id" : r.recipe_id.id, "ingredient_name" : r.ingredient_id.ingredient_name, "measurement_id" : r.measurement_id.id, "amount" : r.amount} for r in recipe_ingredients])
+    return jsonify([{"id" : r.id, "recipe_id" : r.recipe_id.id, "ingredient_name" : r.ingredient_id.ingredient_name, "ingredient_id" : r.ingredient_id.id, "measurement_id" : r.measurement_id.id, "amount" : r.amount} for r in recipe_ingredients])
 
 @recipe_ingredients_api_blueprint.route('/<recipe_id>', methods=['GET'])
 def recipe(recipe_id):
     recipe_ingredients=RecipeIngredient.select().where(RecipeIngredient.recipe_id == recipe_id)
-    return jsonify([{"id" : r.id, "recipe_id" : r.recipe_id.id, "ingredient_name" : r.ingredient_id.ingredient_name, "measurement_id" : r.measurement_id.id, "amount" : r.amount} for r in recipe_ingredients])
+    return jsonify([{"id" : r.id, "recipe_id" : r.recipe_id.id, "ingredient_name" : r.ingredient_id.ingredient_name, "ingredient_id" : r.ingredient_id.id, "measurement_id" : r.measurement_id.id, "amount" : r.amount} for r in recipe_ingredients])
