@@ -30,7 +30,7 @@ def today():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
     subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today())
-    return jsonify([{"id" : s.id, "user" : s.user.id, "subscription" : s.subscription.id, "recipe" : s.recipe.id}for s in subscription_recipes])
+    return jsonify([{"id" : s.id, "user" : s.user.id, "subscription" : s.subscription.id, "recipe" : s.recipe.id, "recipe_image_path" : app.config.get("S3_LOCATION") + s.recipe.image_url}for s in subscription_recipes])
 
 @subscription_recipes_api_blueprint.route('/me/<recipe_id>', methods=['POST'])
 @jwt_required
