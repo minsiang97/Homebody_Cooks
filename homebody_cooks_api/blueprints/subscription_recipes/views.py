@@ -37,7 +37,7 @@ def today():
 def user_add_cart(recipe_id):
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
-    ingredients = request.json.data.selectedIngredients
+    ingredients = request.json
     print(request.json.data.selectedIngredients)
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
     new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
