@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
 from models.order_checkout import OrderCheckout
+from models.subscription_recipe import Subscription_Recipe
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app
 from helpers import s3, upload_to_s3
+import datetime
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -104,6 +106,20 @@ def post_user_image():
     else:
         
         return jsonify({"messages" : "No file selected"})
+
+@users_api_blueprint.route('/me/checkout', methods=['POST'])
+@jwt_required
+def checkout():
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today())
+    for s in subscription_recipes :
+        order_checkout = OrderCheckout(subscription_recipe = s.id, user = user.id)
+        order_checkout.save()
+    if order_checkout.save():
+        return jsonify({"message" : "Successfully checked out"})
+    else :
+        return jsonify({"message" : "Error occured, try again."})
 
 @users_api_blueprint.route('/me/order_history', methods=['GET'])
 @jwt_required
