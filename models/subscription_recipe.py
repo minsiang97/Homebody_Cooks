@@ -9,4 +9,5 @@ class Subscription_Recipe(BaseModel):
     user = pw.ForeignKeyField(User, backref = "recipes", on_delete="CASCADE")
     subscription = pw.ForeignKeyField(Subscription, backref = "recipes", on_delete = "CASCADE")
     recipe = pw.ForeignKeyField(Recipe, backref = "recipes", on_delete = "CASCADE")
+    is_checkedout = pw.BooleanField(default = 0)
 
