@@ -30,7 +30,8 @@ def me():
             "email" : user.email, 
             "password_hash" : user.password_hash,
             "is_admin" : user.is_admin, 
-            "is_valid" : user.is_valid
+            "is_valid" : user.is_valid,
+            "subscription_id" : user.subscription.id
         })
 
 @users_api_blueprint.route('/me/update', methods=['PUT'])
