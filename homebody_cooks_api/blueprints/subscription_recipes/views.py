@@ -39,16 +39,20 @@ def user_add_cart(recipe_id):
     user = User.get_or_none(User.id == user_id)
     ingredients = request.json["selectedIngredients"]
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
-    new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
-    new_subscription_recipe.save()
-    for ingredient in ingredients :
-        user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == user.id).order_by(Subscription_Recipe.created_at.desc()).get()
-        order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
-        order.save()
-    if order.save():
-        return jsonify({"message" : "Successfully added to cart"})
+    temp = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today(), Subscription_Recipe.is_checkedout == 0, Subscription_Recipe.recipe == recipe.id )
+    if temp :
+        return jsonify({"message" : "Item is already in the cart"})
     else :
-        return jsonify({"message" : "Error occured"})
+        new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
+        new_subscription_recipe.save()
+        for ingredient in ingredients :
+            user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == user.id).order_by(Subscription_Recipe.created_at.desc()).get()
+            order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
+            order.save()
+        if order.save():
+            return jsonify({"message" : "Successfully added to cart"})
+        else :
+            return jsonify({"message" : "Error occured"})
 
 @subscription_recipes_api_blueprint.route('/me/<recipe_id>/delete', methods=['DELETE'])
 @jwt_required
