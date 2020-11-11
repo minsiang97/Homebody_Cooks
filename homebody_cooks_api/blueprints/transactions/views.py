@@ -29,36 +29,31 @@ def index():
 @transactions_api_blueprint.route('/<subscription_id>/payment', methods=['POST'])
 @jwt_required
 def payment(subscription_id):
-    # user_id = get_jwt_identity()
-    # user = User.get_or_none(User.id == user_id)
-    # subscription = Subscription.get_or_none(Subscription.id == subscription_id)
-    nonce_from_the_client = request.json["payment_method_nonce"]
+    user_id = get_jwt_identity()
+    user = User.get_or_none(User.id == user_id)
+    subscription = Subscription.get_or_none(Subscription.id == subscription_id)
+    nonce_from_the_client = request.json["temp"]
     result = gateway.customer.create({
-        "first_name": "kum",
-        "email": "kum@gmail.com",
+        "first_name": user.name,
+        "email": user.email,
         "payment_method_nonce": nonce_from_the_client
     })
 
     if result.is_success :
-        return jsonify({"message" : "result successful"})
+        result_subscription = gateway.subscription.create({
+            "id" : user.id,
+            "payment_method_token": result.customer.payment_methods[0].token,
+            "plan_id": subscription.id
+        })
+
+    if type(result_subscription) == SuccessfulResult:
+        new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
+
+        if new_transaction.save():
+            user.is_valid = True
+            user.save()
+            send_message_first_payment.delay(email = user.email, name = user.name)
+            return jsonify({"message" : "Payment has been processed successfully"})
+
     else :
-        return jsonify({"message" : "Payment failed, try again"})
-
-    # if result.is_success :
-    #     result_subscription = gateway.subscription.create({
-    #         "id" : user.id,
-    #         "payment_method_token": result.customer.payment_methods[0].token,
-    #         "plan_id": subscription.id
-    #     })
-
-    # if type(result_subscription) == SuccessfulResult:
-    #     new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
-
-    #     if new_transaction.save():
-    #         user.is_valid = True
-    #         user.save()
-    #         send_message_first_payment.delay(email = user.email, name = user.name)
-    #         return jsonify({"message" : "Payment has been processed successfully"})
-
-    # else :
-    #     return jsonify({"message" : "Payment failed, try again"})        
+        return jsonify({"message" : "Payment failed, try again"})        
