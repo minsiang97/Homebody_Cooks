@@ -112,11 +112,13 @@ def post_user_image():
 def checkout():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
-    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today())
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today(), Subscription_Recipe.is_checkedout == 0)
     for s in subscription_recipes :
         order_checkout = OrderCheckout(subscription_recipe = s.id, user = user.id)
         order_checkout.save()
-    if order_checkout.save():
+        s.is_checkedout = 1
+        s.save()
+    if order_checkout.save() and s.save():
         return jsonify({"message" : "Successfully checked out"})
     else :
         return jsonify({"message" : "Error occured, try again."})
