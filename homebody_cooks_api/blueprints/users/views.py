@@ -24,15 +24,26 @@ def me():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
     if user :
-        return jsonify({
-            "id" : user.id, 
-            "name" : user.name,
-            "email" : user.email, 
-            "password_hash" : user.password_hash,
-            "is_admin" : user.is_admin, 
-            "is_valid" : user.is_valid,
-            "subscription_id" : user.subscription.id
-        })
+        if user.subscription :
+            return jsonify({
+                "id" : user.id, 
+                "name" : user.name,
+                "email" : user.email, 
+                "password_hash" : user.password_hash,
+                "is_admin" : user.is_admin, 
+                "is_valid" : user.is_valid,
+                "subscription_id" : user.subscription.id
+            })
+        else :
+            return jsonify({
+                "id" : user.id, 
+                "name" : user.name,
+                "email" : user.email, 
+                "password_hash" : user.password_hash,
+                "is_admin" : user.is_admin, 
+                "is_valid" : user.is_valid,
+                "subscription_id" : "undefined"
+            })
 
 @users_api_blueprint.route('/me/update', methods=['PUT'])
 @jwt_required
