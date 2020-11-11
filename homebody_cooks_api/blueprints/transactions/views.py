@@ -23,7 +23,7 @@ def index():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
     client_token = gateway.client_token.generate()
-    return jsonify({client_token})
+    return jsonify({"token" : client_token})
 
 
 @transactions_api_blueprint.route('/<subscription_id>/payment', methods=['GET'])
