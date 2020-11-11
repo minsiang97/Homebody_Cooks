@@ -4,7 +4,7 @@ from models.order_checkout import OrderCheckout
 from models.subscription_recipe import Subscription_Recipe
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import app
+from app import app, send_message_create_user, send_msg_checkout
 from helpers import s3, upload_to_s3
 import datetime
 
@@ -67,6 +67,7 @@ def create_user():
     hashed_password = generate_password_hash(data.get("password"))
     new_user = User(name = data.get("user_name"), password_hash = hashed_password, email = data.get("email"))
     if new_user.save() :
+        send_message_create_user.delay(email = new_user.email, name = new_user.name)
         return jsonify({"message" : "New User Created!"})
     else :
         return jsonify({"message" : "Error occured, try again"})
@@ -119,6 +120,7 @@ def checkout():
         s.is_checkedout = 1
         s.save()
     if order_checkout.save() and s.save():
+        send_msg_checkout.delay(email=user.email, name=user.name)
         return jsonify({"message" : "Successfully checked out"})
     else :
         return jsonify({"message" : "Error occured, try again."})
