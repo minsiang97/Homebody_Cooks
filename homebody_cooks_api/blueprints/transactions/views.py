@@ -26,7 +26,7 @@ def index():
     return jsonify({"token" : client_token})
 
 
-@transactions_api_blueprint.route('/<subscription_id>/payment', methods=['GET'])
+@transactions_api_blueprint.route('/<subscription_id>/payment', methods=['POST'])
 @jwt_required
 def payment(subscription_id):
     user_id = get_jwt_identity()
