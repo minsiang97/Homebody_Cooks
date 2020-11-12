@@ -61,17 +61,16 @@ def user_add_cart(recipe_id):
     else :
         if len(subscription_recipes) >= (user.subscription.amount_of_meals) :
             return jsonify({"message" : "You have reached the maximum amount of meals selected in a week"})
-        else:
-            new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
-            new_subscription_recipe.save()
-            for ingredient in ingredients :
-                user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == user.id).order_by(Subscription_Recipe.created_at.desc()).get()
-                order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
-                order.save()
-            if order.save():
-                return jsonify({"message" : "Successfully added to cart"})
-            else :
-                return jsonify({"message" : "Error occured"})
+        new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
+        new_subscription_recipe.save()
+        for ingredient in ingredients :
+            user_recipe = Subscription_Recipe.select().where(Subscription_Recipe.recipe == recipe.id, Subscription_Recipe.user == user.id).order_by(Subscription_Recipe.created_at.desc()).get()
+            order = Order(subscription_recipe = user_recipe.id, ingredient = ingredient)
+            order.save()
+        if order.save():
+            return jsonify({"message" : "Successfully added to cart"})
+        else :
+            return jsonify({"message" : "Error occured"})
 
 @subscription_recipes_api_blueprint.route('/me/<recipe_id>/delete', methods=['DELETE'])
 @jwt_required
