@@ -25,7 +25,7 @@ class User(BaseModel, UserMixin):
         if self.profile_image_url:
             return app.config.get("S3_LOCATION") + self.profile_image_url
         else:
-            return app.config.get("S3_LOCATION") + "users/Untitled_Artwork.jpg"
+            return app.config.get("S3_LOCATION") + "Untitled_Artwork.jpg"
             
 
     def validate(self):
