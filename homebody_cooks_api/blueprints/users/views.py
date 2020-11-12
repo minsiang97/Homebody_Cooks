@@ -145,6 +145,6 @@ def order_history():
     user = User.get_or_none(User.id == user_id)
     order_checkouts = OrderCheckout.select().where(OrderCheckout.user == user.id)
     if order_checkouts :
-        return jsonify([{"id" : o.id, "subscription_recipe" : o.subscription_recipe.id, "user" : o.user.id, "created_at" : o.created_at} for o in order_checkouts])
+        return jsonify([{"id" : o.id, "subscription_recipe" : o.subscription_recipe.id, "user" : o.user.id, "created_at" : o.created_at, "recipe_image_path" : app.config.get("S3_LOCATION") + o.subscription_recipe.recipe.image_url} for o in order_checkouts])
     else :
         return jsonify({"messages" : "User does not have any previous order yet"})
