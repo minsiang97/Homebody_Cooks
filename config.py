@@ -33,6 +33,8 @@ class Config(object):
     CELERY_BROKER_URL= os.environ.get("CELERY_BROKER_URL")
     CELERY_RESULT_BACKEND=os.environ.get("CELERY_RESULT_BACKEND")
 
+    JWT_ACCESS_TOKEN_EXPIRES = False
+
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
