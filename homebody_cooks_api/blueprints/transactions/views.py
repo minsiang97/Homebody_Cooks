@@ -33,20 +33,31 @@ def payment(subscription_id):
     user = User.get_or_none(User.id == user_id)
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
     nonce_from_the_client = request.json["temp"]
-    result = gateway.customer.create({
-        "first_name": user.name,
-        "email": user.email,
-        "payment_method_nonce": nonce_from_the_client
+    # result = gateway.customer.create({
+    #     "first_name": user.name,
+    #     "email": user.email,
+    #     "payment_method_nonce": nonce_from_the_client
+    # })
+    # print(result)
+
+    # if result.is_success :
+    #     result_subscription = gateway.subscription.create({
+    #         "id" : user.id,
+    #         "payment_method_token": result.customer.payment_methods[0].token,
+    #         "plan_id": subscription.id
+    #     })
+    
+    result = gateway.transaction.sale({
+    "amount": subscription.price,
+    "payment_method_nonce": nonce_from_the_client,
+    "options": {
+      "submit_for_settlement": True
+    }
     })
+    
+    
 
-    if result.is_success :
-        result_subscription = gateway.subscription.create({
-            "id" : user.id,
-            "payment_method_token": result.customer.payment_methods[0].token,
-            "plan_id": subscription.id
-        })
-
-    if type(result_subscription) == type(SuccessfulResult):
+    if type(result) == SuccessfulResult:
         user.subscription = subscription.id
         user.save()
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
