@@ -22,10 +22,11 @@ class User(BaseModel, UserMixin):
     @hybrid_property
     def profile_image_path(self):
         from app import app
-        if not self.profile_image_url:
-            return app.config.get("S3_LOCATION") + "Untitled_Artwork.jpg"
-        else:
+        if self.profile_image_url:
             return app.config.get("S3_LOCATION") + self.profile_image_url
+        else:
+            return app.config.get("S3_LOCATION") + "Untitled_Artwork.jpg"
+            
 
     def validate(self):
         duplicate_emails = User.get_or_none(User.email == self.email)
