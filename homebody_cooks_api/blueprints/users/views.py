@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from models.user import User
 from models.order_checkout import OrderCheckout
 from models.subscription_recipe import Subscription_Recipe
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import app, send_message_create_user, send_msg_checkout
 from helpers import s3, upload_to_s3
