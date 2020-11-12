@@ -56,5 +56,5 @@ def payment(subscription_id):
             send_message_first_payment.delay(email = user.email, name = user.name)
             return jsonify({"message" : "Payment has been processed successfully"})
 
-    else :
-        return jsonify({"message" : "Payment failed, try again"})        
+        else :
+            return jsonify({"message" : "Payment failed, try again"})        
