@@ -32,7 +32,7 @@ def payment(subscription_id):
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
-    nonce_from_the_client = request.json["temp"]
+    nonce_from_the_client = request.json.get("temp")
     result = gateway.customer.create({
         "first_name": user.name,
         "email": user.email,
@@ -46,7 +46,7 @@ def payment(subscription_id):
             "plan_id": subscription.id
         })
 
-    if result_subscription.is_success:
+    if type(result_subscription) == SuccessfulResult:
         user.subscription = subscription.id
         user.save()
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
