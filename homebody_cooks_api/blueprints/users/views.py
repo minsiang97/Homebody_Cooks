@@ -79,8 +79,9 @@ def create_user():
     hashed_password = generate_password_hash(data.get("password"))
     new_user = User(name = data.get("user_name"), password_hash = hashed_password, email = data.get("email"))
     if new_user.save() :
+        token = create_access_token(identity = new_user.id)
         send_message_create_user.delay(email = new_user.email, name = new_user.name)
-        return jsonify({"message" : "New User Created!"})
+        return jsonify({"message" : "New User Created!", "token" : token})
     else :
         return jsonify({"message" : "Error occured, try again"})
 
