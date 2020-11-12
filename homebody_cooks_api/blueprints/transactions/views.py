@@ -47,12 +47,13 @@ def payment(subscription_id):
         })
 
     if type(result_subscription) == SuccessfulResult:
+        user.is_valid = True
+        user.subscription = subscription.id
+        user.save()
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
 
-        if new_transaction.save():
-            user.is_valid = True
-            user.subscription = subscription.id
-            user.save()
+        if new_transaction.save() and user.save():
+            
             send_message_first_payment.delay(email = user.email, name = user.name)
             return jsonify({"message" : "Payment has been processed successfully"})
 
