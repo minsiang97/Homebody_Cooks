@@ -16,7 +16,7 @@ class User(BaseModel, UserMixin):
     password = None
     is_valid = pw.BooleanField(default=0)
     subscription = pw.ForeignKeyField(Subscription, backref="users", on_delete="CASCADE", null = True)
-    profile_image_url = pw.TextField(null=True)
+    profile_image_url = pw.TextField(default="Untitled_Artwork.jpg")
     is_admin = pw.BooleanField(default=0)
 
     @hybrid_property
