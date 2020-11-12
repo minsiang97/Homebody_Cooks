@@ -51,6 +51,7 @@ def payment(subscription_id):
 
         if new_transaction.save():
             user.is_valid = True
+            user.subscription = subscription.id
             user.save()
             send_message_first_payment.delay(email = user.email, name = user.name)
             return jsonify({"message" : "Payment has been processed successfully"})
