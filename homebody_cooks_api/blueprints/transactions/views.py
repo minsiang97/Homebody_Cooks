@@ -47,8 +47,7 @@ def payment(subscription_id):
         })
 
     if type(result_subscription) == SuccessfulResult:
-        user.is_valid = True
-        user.subscription_id = subscription.id
+        user.subscription = subscription.id
         user.save()
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
 
