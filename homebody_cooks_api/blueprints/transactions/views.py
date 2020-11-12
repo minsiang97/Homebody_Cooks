@@ -33,27 +33,40 @@ def payment(subscription_id):
     user = User.get_or_none(User.id == user_id)
     subscription = Subscription.get_or_none(Subscription.id == subscription_id)
     nonce_from_the_client = request.json["temp"]
-    result = gateway.customer.create({
-        "first_name": user.name,
-        "email": user.email,
-        "payment_method_nonce": nonce_from_the_client
+    # result = gateway.customer.create({
+    #     "first_name": user.name,
+    #     "email": user.email,
+    #     "payment_method_nonce": nonce_from_the_client
+    # })
+    # print(result)
+
+    # if result.is_success :
+    #     result_subscription = gateway.subscription.create({
+    #         "id" : user.id,
+    #         "payment_method_token": result.customer.payment_methods[0].token,
+    #         "plan_id": subscription.id
+    #     })
+    
+    result = gateway.transaction.sale({
+    "amount": subscription.price,
+    "payment_method_nonce": nonce_from_the_client,
+    "options": {
+      "submit_for_settlement": True
+    }
     })
+    
+    
 
-    if result.is_success :
-        result_subscription = gateway.subscription.create({
-            "id" : user.id,
-            "payment_method_token": result.customer.payment_methods[0].token,
-            "plan_id": subscription.id
-        })
-
-    if type(result_subscription) == SuccessfulResult:
+    if type(result) == SuccessfulResult:
+        user.is_valid = True
+        user.subscription = subscription.id
+        user.save()
         new_transaction = Transaction(amount = subscription.price, subscription = subscription.id , user = user.id)
 
-        if new_transaction.save():
-            user.is_valid = True
-            user.save()
+        if new_transaction.save() and user.save():
+            
             send_message_first_payment.delay(email = user.email, name = user.name)
             return jsonify({"message" : "Payment has been processed successfully"})
 
-    else :
-        return jsonify({"message" : "Payment failed, try again"})        
+        else :
+            return jsonify({"message" : "Payment failed, try again"})        

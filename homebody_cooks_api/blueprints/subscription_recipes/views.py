@@ -52,7 +52,7 @@ def week():
 def user_add_cart(recipe_id):
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
-    ingredients = request.json
+    ingredients = request.json["selectedIngredients"]
     recipe = Recipe.get_or_none(Recipe.id == recipe_id)
     subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at.between(fn.date_trunc('week', date.today()), date.today() + timedelta(days=1)))
     temp = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at >= datetime.date.today(), Subscription_Recipe.is_checkedout == 0, Subscription_Recipe.recipe == recipe.id )
@@ -61,7 +61,7 @@ def user_add_cart(recipe_id):
     else :
         if len(subscription_recipes) >= (user.subscription.amount_of_meals) :
             return jsonify({"message" : "You have reached the maximum amount of meals selected in a week"})
-        else:
+        else :
             new_subscription_recipe = Subscription_Recipe(user = user.id, subscription = user.subscription.id, recipe = recipe.id)
             new_subscription_recipe.save()
             for ingredient in ingredients :
