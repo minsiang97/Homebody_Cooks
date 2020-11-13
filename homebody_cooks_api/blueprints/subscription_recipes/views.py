@@ -41,7 +41,7 @@ def today():
 def week():
     user_id = get_jwt_identity()
     user = User.get_or_none(User.id == user_id)
-    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at.between(fn.date_trunc('week', date.today()), date.today() + timedelta(days=1)))
+    subscription_recipes = Subscription_Recipe.select().where(Subscription_Recipe.user == user.id, Subscription_Recipe.created_at.between(fn.date_trunc('week', date.today()), date.today() + timedelta(days=1)), Subscription_Recipe.is_checkedout == 0)
     return jsonify([{"id" : s.id, "user" : s.user.id, "subscription" : s.subscription.id, "recipe" : s.recipe.id, "recipe_image_path" : app.config.get("S3_LOCATION") + s.recipe.image_url, "recipe_name" : s.recipe.recipe_name}for s in subscription_recipes])
 
     
