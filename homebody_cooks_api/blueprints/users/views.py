@@ -33,6 +33,7 @@ def me():
                 "is_admin" : user.is_admin, 
                 "is_valid" : user.is_valid,
                 "subscription_id" : user.subscription.id
+                "subscription_name" : user.subscription.name
             })
         else :
             return jsonify({
@@ -43,6 +44,7 @@ def me():
                 "is_admin" : user.is_admin, 
                 "is_valid" : user.is_valid,
                 "subscription_id" : "undefined"
+                "subscription_name" : "No Plan Selected"
             })
 
 @users_api_blueprint.route('/me/update', methods=['PUT'])
